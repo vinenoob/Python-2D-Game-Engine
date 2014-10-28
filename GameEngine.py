@@ -18,7 +18,7 @@ npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
 mediumFont = pygame.font.Font("freesansbold.ttf", 60)
 largeFont = pygame.font.Font("freesansbold.ttf", 115)
-
+mouse = pygame.mouse.get_pos()
 
 class Object():
     def __init__(self, x, y, width, height, img, color):
@@ -90,6 +90,13 @@ class Object():
         else:
             gameDisplay.blit(self.img, (self.x, self.y))
 
+    def hovered(self):
+        mouse = pygame.mouse.get_pos()
+        if self.x + self.width > mouse[0] > self.x and self.y + self.height > mouse[1] > self.y:
+            return True
+        else:
+            return False
+
 
 class Player(Object):
     pass
@@ -97,23 +104,50 @@ class Player(Object):
 
 class Button(Object):
     def __init__(self, x, y, width, height, img, color, highlight_color, text_color, text):
+        """
+        :param x-color: see Object
+        :param text_color: Color of the text
+        :param text: What the button will say
+        """
         super().__init__(x, y, width, height, img, color)
         self.text = text
         self.highlight_color = highlight_color
         self.text_color = text_color
 
+
+
     def run(self, font):
-        mouse = pygame.mouse.get_pos()
-        if self.x + self.width > mouse[0] > self.x and self.y + self.height > mouse[1] > self.y:
-            pygame.draw.rect(gameDisplay, self.highlight_color, [self.x, self.y, self.width, self.height])
-            TextSurf, TextRect = text_objects(self.text, font, self.text_color)
-            TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
-            gameDisplay.blit(TextSurf, TextRect)
+        if self.img is not None:
+            gameDisplay.blit(self.img, (self.x, self.y))
+            if left_mouse_click() and self.hovered():
+                print("hello")
+        elif self.hovered():
+            self.draw_btn(font)
+            # pygame.draw.rect(gameDisplay, self.highlight_color, [self.x, self.y, self.width, self.height])
+            # TextSurf, TextRect = text_objects(self.text, font, self.text_color)
+            # TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
+            # gameDisplay.blit(TextSurf, TextRect)
+            if left_mouse_click():
+                print("hello")
         else:
-            pygame.draw.rect(gameDisplay, self.color, [self.x, self.y, self.width, self.height])
-            TextSurf, TextRect = text_objects(self.text, font, self.text_color)
-            TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
-            gameDisplay.blit(TextSurf, TextRect)
+            self.draw_btn(font)
+            # pygame.draw.rect(gameDisplay, self.color, [self.x, self.y, self.width, self.height])
+            # TextSurf, TextRect = text_objects(self.text, font, self.text_color)
+            # TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
+            # gameDisplay.blit(TextSurf, TextRect)
+
+    def draw_btn(self, font):
+        pygame.draw.rect(gameDisplay, self.highlight_color, [self.x, self.y, self.width, self.height])
+        TextSurf, TextRect = text_objects(self.text, font, self.text_color)
+        TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
+        gameDisplay.blit(TextSurf, TextRect)
+
+def left_mouse_click():
+    click = pygame.mouse.get_pressed()
+    if click[0] == 1:
+        return True
+    else:
+        return False
 
 
 def text_objects(text, font, color):
@@ -148,19 +182,18 @@ def game_loop():
 
         # Don't Draw stuff before this
         gameDisplay.fill(white)
-            #Prevent player from hitting sides
-        # if player.hit_side_top_y() or player.hit_side_bottom_y():
-        #     if player.hit_side_top_y():
-        #         player.y += 1
-        #     if player.hit_side_bottom_y():
-        #         player.y -= 1
-        #     player.moveAmtY = 0
-        # elif player.hit_side_left_x() or player.hit_side_right_x():
-        #     if player.hit_side_left_x():
-        #         player.x += 1
-        #     if player.hit_side_right_x():
-        #         player.x -= 1
-        #     player.moveAmtX = 0
+        if player.hit_side_top_y() or player.hit_side_bottom_y():
+            if player.hit_side_top_y():
+                player.y += 1
+            if player.hit_side_bottom_y():
+                player.y -= 1
+            player.moveAmtY = 0
+        elif player.hit_side_left_x() or player.hit_side_right_x():
+            if player.hit_side_left_x():
+                player.x += 1
+            if player.hit_side_right_x():
+                player.x -= 1
+            player.moveAmtX = 0
 
         player.move()
         player.draw()

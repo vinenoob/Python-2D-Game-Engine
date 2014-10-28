@@ -18,7 +18,7 @@ npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
 mediumFont = pygame.font.Font("freesansbold.ttf", 60)
 largeFont = pygame.font.Font("freesansbold.ttf", 115)
-mouse = pygame.mouse.get_pos()
+
 
 class Object():
     def __init__(self, x, y, width, height, img, color):
@@ -36,9 +36,21 @@ class Object():
         self.height = height
         self.img = img
         self.color = color
+        self.center_x = 0
+        self.center_y = 0
+
 
     moveAmtX = 0
     moveAmtY = 0
+    #Idea for later
+
+    def ret_center_x(self):
+        self.center_x = int((self.x + (self.width / 2)))
+        return self.center_x
+
+    def ret_center_y(self):
+        self.center_y = int((self.y + (self.height / 2)))
+        return self.center_y
 
     def ret_x(self):
         return self.x
@@ -97,9 +109,42 @@ class Object():
         else:
             return False
 
+    def stop_screen_hit(self):
+        if self.hit_side_top_y() or self.hit_side_bottom_y():
+            if self.hit_side_top_y():
+                self.y += 1
+            if self.hit_side_bottom_y():
+                self.y -= 1
+            self.moveAmtY = 0
+        elif self.hit_side_left_x() or self.hit_side_right_x():
+            if self.hit_side_left_x():
+                self.x += 1
+            if self.hit_side_right_x():
+                self.x -= 1
+            self.moveAmtX = 0
+
 
 class Player(Object):
-    pass
+    def check_move(self, event_list):
+        for event in event_list:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        self.moveAmtX = -5
+                    elif event.key == pygame.K_d:
+                        self.moveAmtX = 5
+                    elif event.key == pygame.K_w:
+                        self.moveAmtY = -5
+                    elif event.key == pygame.K_s:
+                        self.moveAmtY = 5
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_a or event.key == pygame.K_d:
+                        self.moveAmtX = 0
+                    if event.key == pygame.K_w or event.key == pygame.K_s:
+                        self.moveAmtY = 0
+
 
 
 class Button(Object):
@@ -114,33 +159,29 @@ class Button(Object):
         self.highlight_color = highlight_color
         self.text_color = text_color
 
-
-
-    def run(self, font):
+    def run(self, font, action):
         if self.img is not None:
             gameDisplay.blit(self.img, (self.x, self.y))
             if left_mouse_click() and self.hovered():
-                print("hello")
+                action()
         elif self.hovered():
-            self.draw_btn(font)
-            # pygame.draw.rect(gameDisplay, self.highlight_color, [self.x, self.y, self.width, self.height])
-            # TextSurf, TextRect = text_objects(self.text, font, self.text_color)
-            # TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
-            # gameDisplay.blit(TextSurf, TextRect)
+            self.draw_btn(self.highlight_color, font)
             if left_mouse_click():
-                print("hello")
+                action()
         else:
-            self.draw_btn(font)
-            # pygame.draw.rect(gameDisplay, self.color, [self.x, self.y, self.width, self.height])
-            # TextSurf, TextRect = text_objects(self.text, font, self.text_color)
-            # TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
-            # gameDisplay.blit(TextSurf, TextRect)
+            self.draw_btn(self.color, font)
 
-    def draw_btn(self, font):
-        pygame.draw.rect(gameDisplay, self.highlight_color, [self.x, self.y, self.width, self.height])
+    def is_clicked(self):
+        if left_mouse_click() and self.hovered():
+            return True
+    def draw_btn(self, color, font):
+        pygame.draw.rect(gameDisplay, color, [self.x, self.y, self.width, self.height])
         TextSurf, TextRect = text_objects(self.text, font, self.text_color)
         TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
         gameDisplay.blit(TextSurf, TextRect)
+
+def hello():
+    print("Hello!")
 
 def left_mouse_click():
     click = pygame.mouse.get_pressed()
@@ -160,44 +201,17 @@ def game_loop():
     btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)
-    while cont:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    player.moveAmtX = -5
-                elif event.key == pygame.K_d:
-                    player.moveAmtX = 5
-                elif event.key == pygame.K_w:
-                    player.moveAmtY = -5
-                elif event.key == pygame.K_s:
-                    player.moveAmtY = 5
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_d:
-                    player.moveAmtX = 0
-                if event.key == pygame.K_w or event.key == pygame.K_s:
-                    player.moveAmtY = 0
 
+    while cont:
+
+        event_list = pygame.event.get()
+        player.check_move(event_list)
         # Don't Draw stuff before this
         gameDisplay.fill(white)
-        if player.hit_side_top_y() or player.hit_side_bottom_y():
-            if player.hit_side_top_y():
-                player.y += 1
-            if player.hit_side_bottom_y():
-                player.y -= 1
-            player.moveAmtY = 0
-        elif player.hit_side_left_x() or player.hit_side_right_x():
-            if player.hit_side_left_x():
-                player.x += 1
-            if player.hit_side_right_x():
-                player.x -= 1
-            player.moveAmtX = 0
-
+        player.stop_screen_hit()
         player.move()
         player.draw()
-        btn1.run(smallFont)
+        btn1.run(smallFont, hello)
 
         #Update screen
         pygame.display.update()

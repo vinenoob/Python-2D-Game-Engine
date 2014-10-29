@@ -16,7 +16,7 @@ blue = (0, 0, 255)
 mehImg = pygame.image.load("Meh.png")
 npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
-mediumFont = pygame.font.Font("freesansbold.ttf", 60)
+mediumFont = pygame.font.Font("freesansbold.ttf", 40)
 largeFont = pygame.font.Font("freesansbold.ttf", 115)
 
 
@@ -198,7 +198,7 @@ def text_objects(text, font, color):
 
 def game_loop():
     print("filler")
-    btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
+    btn1 = Button(display_width / 2, display_height / 2, 150, 100, None, black, grey, red, "Hello")
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)
 
@@ -211,7 +211,7 @@ def game_loop():
         player.stop_screen_hit()
         player.move()
         player.draw()
-        btn1.run(smallFont, hello)
+        btn1.run(mediumFont, hello)
 
         #Update screen
         pygame.display.update()

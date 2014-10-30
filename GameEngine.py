@@ -197,7 +197,6 @@ def text_objects(text, font, color):
 
 
 def game_loop():
-    print("filler")
     btn1 = Button(display_width / 2, display_height / 2, 150, 100, None, black, grey, red, "Hello")
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)

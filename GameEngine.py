@@ -227,13 +227,12 @@ def text_objects(text, font, color):
 
 
 def game_loop():
-<<<<<<< HEAD
     print("filler")
     btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
     btn2 = Button(320, 0, 320, 320, None, black, grey, red, "Meh")
-=======
+
     btn1 = Button(display_width / 2, display_height / 2, 150, 100, None, black, grey, red, "Hello")
->>>>>>> origin/master
+
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)
     read_background()

@@ -1,6 +1,7 @@
 __author__ = 'Jonathan'
 import pygame
-
+import os
+os.chdir("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine")
 pygame.init()
 display_width = 800
 display_height = 600
@@ -13,11 +14,13 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-mehImg = pygame.image.load("Meh.png")
+mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
+mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
 mediumFont = pygame.font.Font("freesansbold.ttf", 60)
 largeFont = pygame.font.Font("freesansbold.ttf", 115)
+background = []
 
 
 class Object():
@@ -191,6 +194,33 @@ def left_mouse_click():
         return False
 
 
+def read_background():
+    global background
+    with open("background.txt", "r") as w:
+        print("step1")
+        for thing in w:
+            print(thing)
+            tmplst = []
+            for meh in thing:
+                if meh.isdigit():
+                    tmplst += meh
+            background += [tmplst]
+    print(background)
+
+
+def draw_background():
+    temp2 = 0
+    for row in background:
+        temp1 = 0
+        for thing in row:
+            if thing == "0":
+                gameDisplay.blit(mehImg, (temp1 * 32, temp2 * 32))
+            if thing == "1":
+                gameDisplay.blit(mehHigh, (temp1*32, temp2 * 32))
+            temp1 += 1
+        temp2 += 1
+
+
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
     return textSurface, textSurface.get_rect()
@@ -199,8 +229,10 @@ def text_objects(text, font, color):
 def game_loop():
     print("filler")
     btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
+    btn2 = Button(320, 0, 320, 320, None, black, grey, red, "Meh")
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)
+    read_background()
 
     while cont:
 
@@ -212,6 +244,8 @@ def game_loop():
         player.move()
         player.draw()
         btn1.run(smallFont, hello)
+        btn2.run(smallFont, hello)
+        draw_background()
 
         #Update screen
         pygame.display.update()

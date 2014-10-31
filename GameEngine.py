@@ -14,6 +14,8 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
+blueHightlight = (0,0,200)
+greenHightlight = (0, 200, 0)
 mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
 mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 npcID = {"npc1": "unused"}
@@ -177,6 +179,7 @@ class Button(Object):
     def is_clicked(self):
         if left_mouse_click() and self.hovered():
             return True
+
     def draw_btn(self, color, font):
         pygame.draw.rect(gameDisplay, color, [self.x, self.y, self.width, self.height])
         TextSurf, TextRect = text_objects(self.text, font, self.text_color)
@@ -222,16 +225,47 @@ def draw_background():
 
 
 def text_objects(text, font, color):
+
     textSurface = font.render(text, True, color)
     return textSurface, textSurface.get_rect()
+
+
+
+
+def main_menu():
+    meh = True
+    def broken():
+        global meh
+        print("this is broken")
+    playBtn = Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play")
+    mapBtn = Button(175, 366, 450, 75, None, blue, blueHightlight, black, "Map Creator")
+    settingsBtn = Button(275, 482, 250, 75, None, black, grey, white, "Settings")
+    while meh:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        gameDisplay.fill(white)
+
+        playBtn.run(mediumFont, broken)
+        # 2 is not broken. Just have to do editor
+        mapBtn.run(mediumFont, broken)
+        settingsBtn.run(mediumFont, broken)
+        if playBtn.is_clicked():
+            meh = False
+
+        pygame.display.update()
+        clock.tick(30)
+
+
 
 
 def game_loop():
     print("filler")
     btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
-    btn2 = Button(320, 0, 320, 320, None, black, grey, red, "Meh")
+    main_menu()
 
-    btn1 = Button(display_width / 2, display_height / 2, 150, 100, None, black, grey, red, "Hello")
 
     cont = True
     player = Player(100, 100, 32, 32, mehImg, None)
@@ -247,8 +281,7 @@ def game_loop():
         player.move()
         player.draw()
         btn1.run(smallFont, hello)
-        btn2.run(smallFont, hello)
-        draw_background()
+        # draw_background()
 
         #Update screen
         pygame.display.update()

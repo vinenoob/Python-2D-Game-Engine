@@ -16,8 +16,12 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 blueHightlight = (0,0,200)
 greenHightlight = (0, 200, 0)
-mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
-mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+# mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
+# mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+imgs = {"mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
+        "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+
+}
 npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
 mediumFont = pygame.font.Font("freesansbold.ttf", 60)
@@ -47,8 +51,9 @@ class Object():
 
     moveAmtX = 0
     moveAmtY = 0
-    #Idea for later
 
+
+    #Idea for later
     def ret_center_x(self):
         self.center_x = int((self.x + (self.width / 2)))
         return self.center_x
@@ -57,14 +62,6 @@ class Object():
         self.center_y = int((self.y + (self.height / 2)))
         return self.center_y
 
-    def ret_x(self):
-        return self.x
-
-    def ret_y(self):
-        return self.y
-
-    def ret_height(self):
-        return self.height
 
     def collision(self, obj):
         if self.x + self.width >= obj.x and self.x <= obj.x + obj.width:
@@ -217,12 +214,15 @@ def draw_background():
         temp1 = 0
         for thing in row:
             if thing == "0":
-                gameDisplay.blit(mehImg, (temp1 * 32, temp2 * 32))
+                gameDisplay.blit(imgs["mehImg"], (temp1 * 32, temp2 * 32))
             if thing == "1":
-                gameDisplay.blit(mehHigh, (temp1*32, temp2 * 32))
+                gameDisplay.blit(imgs["mehHigh"], (temp1*32, temp2 * 32))
             temp1 += 1
         temp2 += 1
 
+
+def map_editor():
+    pass
 
 def text_objects(text, font, color):
 
@@ -230,6 +230,8 @@ def text_objects(text, font, color):
     return textSurface, textSurface.get_rect()
 
 
+def none():
+    pass
 
 
 def main_menu():
@@ -248,10 +250,10 @@ def main_menu():
                 quit()
         gameDisplay.fill(white)
 
-        playBtn.run(mediumFont, broken)
+        playBtn.run(mediumFont, none)
         # 2 is not broken. Just have to do editor
-        mapBtn.run(mediumFont, broken)
-        settingsBtn.run(mediumFont, broken)
+        mapBtn.run(mediumFont, none)
+        settingsBtn.run(mediumFont, none)
         if playBtn.is_clicked():
             meh = False
 
@@ -268,7 +270,7 @@ def game_loop():
 
 
     cont = True
-    player = Player(100, 100, 32, 32, mehImg, None)
+    player = Player(100, 100, 32, 32, imgs["mehImg"], None)
     read_background()
 
     while cont:
@@ -281,7 +283,7 @@ def game_loop():
         player.move()
         player.draw()
         btn1.run(smallFont, hello)
-        # draw_background()
+        draw_background()
 
         #Update screen
         pygame.display.update()

@@ -220,7 +220,7 @@ def draw_background():
             if thing == "0":
                 gameDisplay.blit(img_dict["mehImg"], (temp1 * 32, temp2 * 32))
             if thing == "1":
-                gameDisplay.blit(img_dict["mehHigh"], (temp1*32, temp2 * 32))
+                gameDisplay.blit(img_dict["mehHigh"], (temp1 * 32, temp2 * 32))
             temp1 += 1
         temp2 += 1
 
@@ -231,7 +231,16 @@ def tile_objty():
     for thing in tile_dict:
         tile_id = str(int(tile_id)+1)
         tile_obj_dict[tile+tile_id] = Button(0, 0, 32, 32, tile_dict[thing], None, None, None, None)
+        tile_obj_dict[tile+tile_id].value = tile_id
     print(img_dict)
+
+
+def save_background():
+    with open("background.txt", "w+") as w:
+        for thing in background:
+            w.write(str(thing))
+            w.write("\n")
+        w.close()
 
 
 def map_editor():
@@ -240,6 +249,8 @@ def map_editor():
     display_bar = Object(0, 500, 800, 100, None, green)
     tile_objty()
     tile_spacing = display_width/(len(img_dict)+1)
+    read_background()
+    timer = 0
     for tile in img_dict:
             num = 1
             for thing in tile_obj_dict:
@@ -247,34 +258,57 @@ def map_editor():
                 tile_obj_dict[thing].x = tile_spacing * num
                 tile_obj_dict[thing].y = 534
                 num += 1
+    tile_set_id = "1"
+    save_btn = Button(750,550,50,50,None,red, black, white, "Save")
     while derp:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                for row in background:
+                    print(row)
                 pygame.quit()
                 quit()
         click = pygame.mouse.get_pressed()
         mouse = pygame.mouse.get_pos()
         gameDisplay.fill(white)
-        read_background()
         draw_background()
         display_bar.draw()
         for thing in tile_obj_dict:
             tile_obj_dict[thing].draw()
-            tile_obj_dict[thing].dist_from_mouse = (mouse[0] - tile_obj_dict[thing].x, mouse[1] - tile_obj_dict[thing].y)
-            print(tile_obj_dict[thing].dist_from_mouse)
+            # tile_obj_dict[thing].dist_from_mouse = (mouse[0] - tile_obj_dict[thing].x, mouse[1] - tile_obj_dict[thing].y)
+            # print(tile_obj_dict[thing].dist_from_mouse)
             tile_obj_dict[thing].was_clicked = False
-            if tile_obj_dict[thing].is_clicked():
-                if tile_obj_dict[thing].was_clicked == True:
-                    tile_obj_dict[thing].was_clicked = False
-                else:
-                    tile_obj_dict[thing].was_clicked = True
-            if left_mouse_click() and tile_obj_dict[thing].dist_from_mouse != (0,0) and tile_obj_dict[thing].was_clicked:
-                tile_obj_dict[thing].x = mouse[0]
-                tile_obj_dict[thing].y = mouse[1]
+            if tile_obj_dict[thing].is_clicked() and timer >= 30:
+                tile_set_id = tile_obj_dict[thing].value
+                # if tile_obj_dict[thing].was_clicked is True:
+                #     tile_obj_dict[thing].was_clicked = False
+                #     tile_set_id = ""
+                # else:
+                #     tile_obj_dict[thing].was_clicked = True
+                #     tile_set_id = tile_obj_dict[thing].value
+        #hardcoded for now
+        if left_mouse_click():
+            for num in range(25):
+                for num2 in range(18):
+                    if num * 32 < mouse[0] < num* 32 + 32:
+                        if num2 * 32 < mouse[1] < num2*32 + 32:
+                            if tile_set_id != "":
+                                print(num2, num)
+                                background[num2][num] = tile_set_id
 
-
-
-
+        # num1 = 0
+        # for row in background:
+        #     num2 = 0
+        #     for cell in row:
+        #         if num1 * 32 < mouse[0] < num1*32 + 32:
+        #
+        #             if num2 * 32 < mouse[1] < num2*32 + 32:
+        #                 print(num1, num2)
+        #                 background[num2][num1] = "0"
+        #         num2 += 1
+        #     num1 += 1
+        # print(mouse)
+        save_btn.run(smallFont, save_background)
+        timer += 1
         pygame.display.update()
         clock.tick(30)
 

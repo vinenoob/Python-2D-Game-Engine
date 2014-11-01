@@ -225,14 +225,7 @@ def draw_background():
         temp2 += 1
 
 
-def tile_objty():
-    tile = "tile"
-    tile_id = "-1"
-    for thing in tile_dict:
-        tile_id = str(int(tile_id)+1)
-        tile_obj_dict[tile+tile_id] = Button(0, 0, 32, 32, tile_dict[thing], None, None, None, None)
-        tile_obj_dict[tile+tile_id].value = tile_id
-    print(img_dict)
+
 
 
 def save_background():
@@ -243,11 +236,27 @@ def save_background():
         w.close()
 
 
+# def tile_objty():
+#     tile = "tile"
+#     tile_id = "-1"
+#     for thing in tile_dict:
+#         tile_id = str(int(tile_id)+1)
+#         tile_obj_dict[tile+tile_id] = Button(0, 0, 32, 32, tile_dict[thing], None, None, None, None)
+#         tile_obj_dict[tile+tile_id].value = tile_id
+#     print(img_dict)
+
+
 def map_editor():
     global display_height, display_width
     derp = True
     display_bar = Object(0, 500, 800, 100, None, green)
-    tile_objty()
+    # tile_objty()
+    black_tile = Button(0, 1, 32, 32, img_dict["mehImg"], None, None, None, None)
+    grey_tile = Button(0, 1, 32, 32, img_dict["mehHigh"], None, None, None, None)
+    black_tile.value = "0"
+    grey_tile.value = "1"
+    tile_obj_dict["mehImg"] = black_tile
+    tile_obj_dict["mehHigh"] = grey_tile
     tile_spacing = display_width/(len(img_dict)+1)
     read_background()
     timer = 0
@@ -291,7 +300,7 @@ def map_editor():
                 for num2 in range(18):
                     if num * 32 < mouse[0] < num* 32 + 32:
                         if num2 * 32 < mouse[1] < num2*32 + 32:
-                            if tile_set_id != "":
+                            if tile_set_id != "-1":
                                 print(num2, num)
                                 background[num2][num] = tile_set_id
 

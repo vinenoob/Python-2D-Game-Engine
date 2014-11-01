@@ -204,6 +204,16 @@ def left_mouse_click():
         return False
 
 
+def text_objects(text, font, color):
+
+    textSurface = font.render(text, True, color)
+    return textSurface, textSurface.get_rect()
+
+
+def none():
+    pass
+
+
 def read_background():
     global background
     with open("background.txt", "r") as w:
@@ -272,8 +282,10 @@ def map_editor():
                 else:
                     background[num2][num] = "1"
                 flipper *= -1
+
     derp = True
     display_bar = Object(0, 500, 800, 100, None, green)
+    display_bar.on_top = False
     # tile_objty()
     black_tile = Button(0, 1, 32, 32, img_dict["mehImg"], None, None, None, None)
     grey_tile = Button(0, 1, 32, 32, img_dict["mehHigh"], None, None, None, None)
@@ -294,9 +306,28 @@ def map_editor():
                 tile_obj_dict[thing].x = tile_spacing * num
                 tile_obj_dict[thing].y = 534
                 num += 1
-    tile_set_id = "1"
+    def flip_dislpay_bar():
+        if not display_bar.on_top:
+            display_bar.y = 0
+            save_btn.y = 0
+            flip_btn.y = 0
+            reset_btn.y = 0
+            display_bar.on_top = True
+            for thing in tile_obj_dict:
+                tile_obj_dict[thing].y = 34
+        elif display_bar.on_top:
+            display_bar.y = 500
+            save_btn.y = 550
+            reset_btn.y = 550
+            flip_btn.y = 500
+            display_bar.on_top = False
+            for thing in tile_obj_dict:
+                tile_obj_dict[thing].y = 534
+
     save_btn = Button(750,550,50,50,None,red, black, white, "Save")
     reset_btn = Button(0, 550, 50, 50, None, red, black, white, "Reset")
+    flip_btn = Button(390, 500, 50, 20, None, red, black, white, "Flip")
+    tile_set_id = "1"
     while derp:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -343,20 +374,25 @@ def map_editor():
         #         num2 += 1
         #     num1 += 1
         # print(mouse)
+        flip_btn.run(smallFont, flip_dislpay_bar)
         save_btn.run(smallFont, save_background)
         reset_btn.run(smallFont, resest_background)
         timer += 1
         pygame.display.update()
         clock.tick(30)
 
-def text_objects(text, font, color):
 
-    textSurface = font.render(text, True, color)
-    return textSurface, textSurface.get_rect()
+def create_character():
+    phoo = True
+    while phoo:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        gameDisplay.fill(white)
+        pygame.display.update()
+        clock.tick(30)
 
-
-def none():
-    pass
 
 
 def main_menu():
@@ -364,9 +400,10 @@ def main_menu():
     def broken():
         global meh
         print("this is broken")
-    playBtn = Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play")
+    new_game_btn = Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play")
+    load_save_game = Button(150, 482, 500, 75, None, green, greenHightlight, black, "Load Save Game")
     mapBtn = Button(175, 366, 450, 75, None, blue, blueHightlight, black, "Map Creator")
-    settingsBtn = Button(275, 482, 250, 75, None, black, grey, white, "Settings")
+    settingsBtn = Button(0, 525, 250, 75, None, black, grey, white, "Settings")
     while meh:
 
         for event in pygame.event.get():
@@ -375,11 +412,12 @@ def main_menu():
                 quit()
         gameDisplay.fill(white)
 
-        playBtn.run(mediumFont, none)
+        new_game_btn.run(mediumFont, create_character)
         # 2 is not broken. Just have to do editor
         mapBtn.run(mediumFont, map_editor)
         settingsBtn.run(mediumFont, none)
-        if playBtn.is_clicked():
+        load_save_game.run(mediumFont, none)
+        if new_game_btn.is_clicked():
             meh = False
 
         pygame.display.update()

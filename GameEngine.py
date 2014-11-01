@@ -20,12 +20,15 @@ greenHightlight = (0, 200, 0)
 # mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 img_dict = {
     "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
-    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png"),
+    "mehBlue": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehBlue.png")
 
 }
+# add value in editor if you add more to tile_dict
 tile_dict = {
     "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
-    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png"),
+    "mehBlue": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehBlue.png")
 }
 tile_obj_dict = {}
 npcID = {"npc1": "unused"}
@@ -221,6 +224,8 @@ def draw_background():
                 gameDisplay.blit(img_dict["mehImg"], (temp1 * 32, temp2 * 32))
             if thing == "1":
                 gameDisplay.blit(img_dict["mehHigh"], (temp1 * 32, temp2 * 32))
+            if thing == "2":
+                gameDisplay.blit(img_dict["mehBlue"], (temp1 * 32, temp2 * 32))
             temp1 += 1
         temp2 += 1
 
@@ -246,15 +251,37 @@ def save_background():
 #     print(img_dict)
 
 
+def resest_background():
+        for num in range(25):
+            flipper = -1
+            for num2 in range(18):
+                if flipper == -1:
+                    background[num2][num] = "0"
+                else:
+                    background[num2][num] = "1"
+                flipper *= -1
+
+
 def map_editor():
-    global display_height, display_width
+    def resest_background():
+        for num in range(25):
+            flipper = -1
+            for num2 in range(18):
+                if flipper == -1:
+                    background[num2][num] = "0"
+                else:
+                    background[num2][num] = "1"
+                flipper *= -1
     derp = True
     display_bar = Object(0, 500, 800, 100, None, green)
     # tile_objty()
     black_tile = Button(0, 1, 32, 32, img_dict["mehImg"], None, None, None, None)
     grey_tile = Button(0, 1, 32, 32, img_dict["mehHigh"], None, None, None, None)
+    blue_tile = Button(0, 1, 32, 32, img_dict["mehBlue"], None, None, None, None)
+    blue_tile.value = "2"
     black_tile.value = "0"
     grey_tile.value = "1"
+    tile_obj_dict["mehBlue"] = blue_tile
     tile_obj_dict["mehImg"] = black_tile
     tile_obj_dict["mehHigh"] = grey_tile
     tile_spacing = display_width/(len(img_dict)+1)
@@ -269,6 +296,7 @@ def map_editor():
                 num += 1
     tile_set_id = "1"
     save_btn = Button(750,550,50,50,None,red, black, white, "Save")
+    reset_btn = Button(0, 550, 50, 50, None, red, black, white, "Reset")
     while derp:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -300,9 +328,8 @@ def map_editor():
                 for num2 in range(18):
                     if num * 32 < mouse[0] < num* 32 + 32:
                         if num2 * 32 < mouse[1] < num2*32 + 32:
-                            if tile_set_id != "-1":
-                                print(num2, num)
-                                background[num2][num] = tile_set_id
+                            print(num2, num)
+                            background[num2][num] = tile_set_id
 
         # num1 = 0
         # for row in background:
@@ -317,6 +344,7 @@ def map_editor():
         #     num1 += 1
         # print(mouse)
         save_btn.run(smallFont, save_background)
+        reset_btn.run(smallFont, resest_background)
         timer += 1
         pygame.display.update()
         clock.tick(30)
@@ -349,7 +377,7 @@ def main_menu():
 
         playBtn.run(mediumFont, none)
         # 2 is not broken. Just have to do editor
-        mapBtn.run(mediumFont, none)
+        mapBtn.run(mediumFont, map_editor)
         settingsBtn.run(mediumFont, none)
         if playBtn.is_clicked():
             meh = False
@@ -373,17 +401,17 @@ def game_loop():
         event_list = pygame.event.get()
         player.check_move(event_list)
         gameDisplay.fill(white)
+        draw_background()
         # Don't Draw stuff before this
         player.stop_screen_hit()
         player.move()
         player.draw()
         btn1.run(smallFont, hello)
-        draw_background()
+
 
         #Update screen
         pygame.display.update()
         clock.tick(30)
 
-map_editor()
 main_menu()
 game_loop()

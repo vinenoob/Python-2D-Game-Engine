@@ -18,10 +18,16 @@ blueHightlight = (0,0,200)
 greenHightlight = (0, 200, 0)
 # mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
 # mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
-imgs = {"mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
-        "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+img_dict = {
+    "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
+    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 
 }
+tile_dict = {
+    "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
+    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+}
+tile_obj_dict = {}
 npcID = {"npc1": "unused"}
 smallFont = pygame.font.Font("freesansbold.ttf", 12)
 mediumFont = pygame.font.Font("freesansbold.ttf", 60)
@@ -100,7 +106,7 @@ class Object():
 
     def draw(self):
         if self.img is None:
-            pygame.draw.rect(gameDisplay, black, [self.x, self.y, self.width, self.height])
+            pygame.draw.rect(gameDisplay, self.color, [self.x, self.y, self.width, self.height])
         else:
             gameDisplay.blit(self.img, (self.x, self.y))
 
@@ -150,7 +156,7 @@ class Player(Object):
 
 
 class Button(Object):
-    def __init__(self, x, y, width, height, img, color, highlight_color, text_color, text):
+    def __init__(self, x, y, width, height, img, color, highlight_color_or_img, text_color, text):
         """
         :param x-color: see Object
         :param text_color: Color of the text
@@ -158,7 +164,7 @@ class Button(Object):
         """
         super().__init__(x, y, width, height, img, color)
         self.text = text
-        self.highlight_color = highlight_color
+        self.highlight_color = highlight_color_or_img
         self.text_color = text_color
 
     def run(self, font, action):
@@ -183,6 +189,7 @@ class Button(Object):
         TextRect.center = (self.x + (self.width / 2), self.y + (self.height / 2))
         gameDisplay.blit(TextSurf, TextRect)
 
+
 def hello():
     print("Hello!")
 
@@ -197,15 +204,12 @@ def left_mouse_click():
 def read_background():
     global background
     with open("background.txt", "r") as w:
-        print("step1")
         for thing in w:
-            print(thing)
             tmplst = []
             for meh in thing:
                 if meh.isdigit():
                     tmplst += meh
             background += [tmplst]
-    print(background)
 
 
 def draw_background():
@@ -214,15 +218,65 @@ def draw_background():
         temp1 = 0
         for thing in row:
             if thing == "0":
-                gameDisplay.blit(imgs["mehImg"], (temp1 * 32, temp2 * 32))
+                gameDisplay.blit(img_dict["mehImg"], (temp1 * 32, temp2 * 32))
             if thing == "1":
-                gameDisplay.blit(imgs["mehHigh"], (temp1*32, temp2 * 32))
+                gameDisplay.blit(img_dict["mehHigh"], (temp1*32, temp2 * 32))
             temp1 += 1
         temp2 += 1
 
 
+def tile_objty():
+    tile = "tile"
+    tile_id = "-1"
+    for thing in tile_dict:
+        tile_id = str(int(tile_id)+1)
+        tile_obj_dict[tile+tile_id] = Button(0, 0, 32, 32, tile_dict[thing], None, None, None, None)
+    print(img_dict)
+
+
 def map_editor():
-    pass
+    global display_height, display_width
+    derp = True
+    display_bar = Object(0, 500, 800, 100, None, green)
+    tile_objty()
+    tile_spacing = display_width/(len(img_dict)+1)
+    for tile in img_dict:
+            num = 1
+            for thing in tile_obj_dict:
+                # tile_obj_dict[thing]
+                tile_obj_dict[thing].x = tile_spacing * num
+                tile_obj_dict[thing].y = 534
+                num += 1
+    while derp:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        click = pygame.mouse.get_pressed()
+        mouse = pygame.mouse.get_pos()
+        gameDisplay.fill(white)
+        read_background()
+        draw_background()
+        display_bar.draw()
+        for thing in tile_obj_dict:
+            tile_obj_dict[thing].draw()
+            tile_obj_dict[thing].dist_from_mouse = (mouse[0] - tile_obj_dict[thing].x, mouse[1] - tile_obj_dict[thing].y)
+            print(tile_obj_dict[thing].dist_from_mouse)
+            tile_obj_dict[thing].was_clicked = False
+            if tile_obj_dict[thing].is_clicked():
+                if tile_obj_dict[thing].was_clicked == True:
+                    tile_obj_dict[thing].was_clicked = False
+                else:
+                    tile_obj_dict[thing].was_clicked = True
+            if left_mouse_click() and tile_obj_dict[thing].dist_from_mouse != (0,0) and tile_obj_dict[thing].was_clicked:
+                tile_obj_dict[thing].x = mouse[0]
+                tile_obj_dict[thing].y = mouse[1]
+
+
+
+
+        pygame.display.update()
+        clock.tick(30)
 
 def text_objects(text, font, color):
 
@@ -266,11 +320,9 @@ def main_menu():
 def game_loop():
     print("filler")
     btn1 = Button(display_width / 2, display_height / 2, 100, 100, None, black, grey, red, "Hello")
-    main_menu()
-
 
     cont = True
-    player = Player(100, 100, 32, 32, imgs["mehImg"], None)
+    player = Player(100, 100, 32, 32, img_dict["mehImg"], None)
     read_background()
 
     while cont:
@@ -289,5 +341,6 @@ def game_loop():
         pygame.display.update()
         clock.tick(30)
 
-
+map_editor()
+main_menu()
 game_loop()

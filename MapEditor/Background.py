@@ -9,7 +9,7 @@ def createBoard(height, width, background):
     for number in range(width):
         mehlst = []
         for thing in range(height):
-            # num *= -1
+            num *= -1
             if num == 1:
                 mehlst += str(0)
             elif num == -1:

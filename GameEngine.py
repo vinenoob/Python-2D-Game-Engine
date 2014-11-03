@@ -400,10 +400,12 @@ def main_menu():
     def broken():
         global meh
         print("this is broken")
-    new_game_btn = Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play")
-    load_save_game = Button(150, 482, 500, 75, None, green, greenHightlight, black, "Load Save Game")
-    mapBtn = Button(175, 366, 450, 75, None, blue, blueHightlight, black, "Map Creator")
-    settingsBtn = Button(0, 525, 250, 75, None, black, grey, white, "Settings")
+    button_dict = {
+    "new_game_btn": Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play"),
+    "load_save_game": Button(150, 482, 500, 75, None, green, greenHightlight, black, "Load Save Game"),
+    "mapBtn": Button(175, 366, 450, 75, None, blue, blueHightlight, black, "Map Creator"),
+    "settingsBtn": Button(0, 525, 250, 75, None, black, grey, white, "Settings")
+    }
     while meh:
 
         for event in pygame.event.get():
@@ -412,13 +414,15 @@ def main_menu():
                 quit()
         gameDisplay.fill(white)
 
-        new_game_btn.run(mediumFont, create_character)
+        button_dict["new_game_btn"].run(mediumFont, create_character)
         # 2 is not broken. Just have to do editor
-        mapBtn.run(mediumFont, map_editor)
-        settingsBtn.run(mediumFont, none)
-        load_save_game.run(mediumFont, none)
-        if new_game_btn.is_clicked():
-            meh = False
+        button_dict["mapBtn"].run(mediumFont, map_editor)
+        button_dict["settingsBtn"].run(mediumFont, none)
+        button_dict["load_save_game"].run(mediumFont, none)
+        print("meh")
+        for thing in button_dict:
+            if button_dict[thing].is_clicked():
+                meh = False
 
         pygame.display.update()
         clock.tick(30)

@@ -1,7 +1,7 @@
 __author__ = 'Jonathan'
 import pygame
 import os
-os.chdir("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine")
+# os.chdir("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine")
 pygame.init()
 display_width = 800
 display_height = 600
@@ -14,21 +14,21 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-blueHightlight = (0,0,200)
+blueHightlight = (0, 0, 200)
 greenHightlight = (0, 200, 0)
 # mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
 # mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 img_dict = {
-    "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
-    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png"),
-    "mehBlue": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehBlue.png")
+    "mehImg": pygame.image.load("Meh.png"),
+    "mehHigh": pygame.image.load("mehHigh.png"),
+    "mehBlue": pygame.image.load("mehBlue.png")
 
 }
 # add value in editor if you add more to tile_dict
 tile_dict = {
-    "mehImg": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png"),
-    "mehHigh": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png"),
-    "mehBlue": pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehBlue.png")
+    "mehImg": pygame.image.load("Meh.png"),
+    "mehHigh": pygame.image.load("mehHigh.png"),
+    "mehBlue": pygame.image.load("mehBlue.png")
 }
 tile_obj_dict = {}
 npcID = {"npc1": "unused"}
@@ -404,7 +404,7 @@ def main_menu():
     "new_game_btn": Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play"),
     "load_save_game": Button(150, 482, 500, 75, None, green, greenHightlight, black, "Load Save Game"),
     "mapBtn": Button(175, 366, 450, 75, None, blue, blueHightlight, black, "Map Creator"),
-    "settingsBtn": Button(0, 525, 250, 75, None, black, grey, white, "Settings")
+    "settingsBtn": Button(0, 525, 125, 50, None, black, grey, white, "Settings")
     }
     while meh:
 
@@ -417,7 +417,7 @@ def main_menu():
         button_dict["new_game_btn"].run(mediumFont, create_character)
         # 2 is not broken. Just have to do editor
         button_dict["mapBtn"].run(mediumFont, map_editor)
-        button_dict["settingsBtn"].run(mediumFont, none)
+        button_dict["settingsBtn"].run(smallFont, none)
         button_dict["load_save_game"].run(mediumFont, none)
         print("meh")
         for thing in button_dict:

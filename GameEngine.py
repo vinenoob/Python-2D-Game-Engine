@@ -18,10 +18,14 @@ blueHightlight = (0, 0, 200)
 greenHightlight = (0, 200, 0)
 # mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
 # mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
+background_dict = {
+    "main": "Backgound.txt"
+}
 img_dict = {
     "mehImg": pygame.image.load("Meh.png"),
     "mehHigh": pygame.image.load("mehHigh.png"),
-    "mehBlue": pygame.image.load("mehBlue.png")
+    "mehBlue": pygame.image.load("mehBlue.png"),
+    "plus": pygame.image.load("plus.png")
 
 }
 # add value in editor if you add more to tile_dict
@@ -214,9 +218,9 @@ def none():
     pass
 
 
-def read_background():
+def read_background(bkgrnd):
     global background
-    with open("background.txt", "r") as w:
+    with open(bkgrnd, "r") as w:
         for thing in w:
             tmplst = []
             for meh in thing:
@@ -283,6 +287,33 @@ def map_editor():
                     background[num2][num] = "1"
                 flipper *= -1
 
+
+    def choose_background():
+        meh = True
+        button_dict = {}
+        button = "button"
+        num = "0"
+        x = 200
+        y = 100
+        for thing in background_dict:
+                background_dict[button+num] = Button(x, y, 20, 10, none(), green, greenHightlight, black, thing)
+
+        while meh:
+            for event in pygame.event.get():
+                if event == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+            click = pygame.mouse.get_pressed()
+            mouse = pygame.mouse.get_pos()
+            gameDisplay.fill(white)
+
+            for thing in background_dict:
+                background_dict[thing].run(smallFont, none)
+
+
+            pygame.display.update()
+            clock.tick(30)
+
     derp = True
     display_bar = Object(0, 500, 800, 100, None, green)
     display_bar.on_top = False
@@ -297,7 +328,7 @@ def map_editor():
     tile_obj_dict["mehImg"] = black_tile
     tile_obj_dict["mehHigh"] = grey_tile
     tile_spacing = display_width/(len(img_dict)+1)
-    read_background()
+    read_background("background.txt")
     timer = 0
     for tile in img_dict:
             num = 1
@@ -436,7 +467,7 @@ def game_loop():
 
     cont = True
     player = Player(100, 100, 32, 32, img_dict["mehImg"], None)
-    read_background()
+    read_background("background.txt")
 
     while cont:
 

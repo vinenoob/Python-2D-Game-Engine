@@ -19,7 +19,7 @@ greenHightlight = (0, 200, 0)
 # mehImg = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\Meh.png")
 # mehHigh = pygame.image.load("C:\Python34\GameEngine\Python-2D-Game-Engine\Python-2D-Game-Engine\mehHigh.png")
 background_dict = {
-    "main": "Backgound.txt"
+    "main": "Background.txt"
 }
 img_dict = {
     "mehImg": pygame.image.load("Meh.png"),
@@ -161,7 +161,6 @@ class Player(Object):
                         self.moveAmtY = 0
 
 
-
 class Button(Object):
     def __init__(self, x, y, width, height, img, color, highlight_color_or_img, text_color, text):
         """
@@ -291,24 +290,24 @@ def map_editor():
     def choose_background():
         meh = True
         button_dict = {}
-        button = "button"
         num = "0"
         x = 200
         y = 100
         for thing in background_dict:
-                background_dict[button+num] = Button(x, y, 20, 10, none(), green, greenHightlight, black, thing)
+                button_dict["button" + num] = Button(x, y, 200, 100, none(), green, greenHightlight, black, thing)
+                num = str(int(num) + 1)
 
         while meh:
-            for event in pygame.event.get():
-                if event == pygame.QUIT:
+            for herpaderp in pygame.event.get():
+                if herpaderp == pygame.QUIT:
                     pygame.quit()
                     quit()
             click = pygame.mouse.get_pressed()
             mouse = pygame.mouse.get_pos()
             gameDisplay.fill(white)
 
-            for thing in background_dict:
-                background_dict[thing].run(smallFont, none)
+            for stuff in button_dict:
+                button_dict[stuff].run(mediumFont, hello)
 
 
             pygame.display.update()
@@ -328,7 +327,7 @@ def map_editor():
     tile_obj_dict["mehImg"] = black_tile
     tile_obj_dict["mehHigh"] = grey_tile
     tile_spacing = display_width/(len(img_dict)+1)
-    read_background("background.txt")
+    read_background(background_dict["main"])
     timer = 0
     for tile in img_dict:
             num = 1
@@ -359,6 +358,7 @@ def map_editor():
     reset_btn = Button(0, 550, 50, 50, None, red, black, white, "Reset")
     flip_btn = Button(390, 500, 50, 20, None, red, black, white, "Flip")
     tile_set_id = "1"
+    choose_background()
     while derp:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -429,7 +429,6 @@ def create_character():
 def main_menu():
     meh = True
     def broken():
-        global meh
         print("this is broken")
     button_dict = {
     "new_game_btn": Button(325, 250, 150, 75, None, green, greenHightlight, black, "Play"),
@@ -467,7 +466,7 @@ def game_loop():
 
     cont = True
     player = Player(100, 100, 32, 32, img_dict["mehImg"], None)
-    read_background("background.txt")
+    read_background(background_dict["main"])
 
     while cont:
 
